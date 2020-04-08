@@ -1,4 +1,4 @@
-# Clojure language support in Atom
+# Clarence language support in Atom
 
 
 Adds syntax highlighting to Clarence files in Atom.
