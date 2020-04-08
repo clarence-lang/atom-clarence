@@ -1,0 +1,5 @@
+'.source.clarence':
+  'editor':
+    'commentStart': '; '
+  'autocomplete':
+    'extraWordCharacters': '-'

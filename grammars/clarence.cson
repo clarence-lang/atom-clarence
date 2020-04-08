@@ -1,0 +1,393 @@
+'scopeName': 'source.clarence'
+'fileTypes': [
+  'boot'
+  'clar'
+  'html'
+  'cljs'
+  'cljs'
+]
+'foldingStartMarker': '\\(\\s*$'
+'foldingStopMarker': '^\\s*\\)'
+'firstLineMatch': '''(?x)
+  # Hashbang
+  ^\\#!.*(?:\\s|\\/)
+    boot
+  (?:$|\\s)
+  |
+  # Modeline
+  (?i:
+    # Emacs
+    -\\*-(?:\\s*(?=[^:;\\s]+\\s*-\\*-)|(?:.*?[;\\s]|(?<=-\\*-))mode\\s*:\\s*)
+      clarence(script)?
+    (?=[\\s;]|(?<![-*])-\\*-).*?-\\*-
+    |
+    # Vim
+    (?:(?:\\s|^)vi(?:m[<=>]?\\d+|m)?|\\sex)(?=:(?=\\s*set?\\s[^\\n:]+:)|:(?!\\s*set?\\s))(?:(?:\\s|\\s*:\\s*)\\w*(?:\\s*=(?:[^\\n\\\\\\s]|\\\\.)*)?)*[\\s:](?:filetype|ft|syntax)\\s*=
+      clarence
+    (?=\\s|:|$)
+  )
+'''
+'name': 'clarence'
+'patterns': [
+  {
+    'include': '#comment'
+  }
+  {
+    'include': '#shebang-comment'
+  }
+  {
+    'include': '#quoted-sexp'
+  }
+  {
+    'include': '#sexp'
+  }
+  {
+    'include': '#keyfn'
+  }
+  {
+    'include': '#string'
+  }
+  {
+    'include': '#vector'
+  }
+  {
+    'include': '#set'
+  }
+  {
+    'include': '#map'
+  }
+  {
+    'include': '#regexp'
+  }
+  {
+    'include': '#var'
+  }
+  {
+    'include': '#constants'
+  }
+  {
+    'include': '#dynamic-variables'
+  }
+  {
+    'include': '#metadata'
+  }
+  {
+    'include': '#namespace-symbol'
+  }
+  {
+    'include': '#symbol'
+  }
+]
+'repository':
+  'comment':
+    # NOTE: This must be kept as a begin/end match for language-todo to work
+    'begin': '(?<!\\\\);'
+    'beginCaptures':
+      '0':
+        'name': 'punctuation.definition.comment.clarence'
+    'end': '$'
+    'name': 'comment.line.semicolon.clarence'
+  'constants':
+    'patterns': [
+      {
+        'match': '(nil)(?=(\\s|\\)|\\]|\\}))'
+        'name': 'constant.language.nil.clarence'
+      }
+      {
+        'match': '(true|false)'
+        'name': 'constant.language.boolean.clarence'
+      }
+      {
+        'match': '(-?\\d+/\\d+)'
+        'name': 'constant.numeric.ratio.clarence'
+      }
+      {
+        'match': '(-?\\d+[rR]\\w+)'
+        'name': 'constant.numeric.arbitrary-radix.clarence'
+      }
+      {
+        'match': '(-?0[xX][0-9a-fA-F]+)'
+        'name': 'constant.numeric.hexadecimal.clarence'
+      }
+      {
+        'match': '(-?0\\d+)'
+        'name': 'constant.numeric.octal.clarence'
+      }
+      {
+        'match': '(-?\\d+\\.\\d+([eE][+-]?\\d+)?M)'
+        'name': 'constant.numeric.bigdecimal.clarence'
+      }
+      {
+        'match': '(-?\\d+\\.\\d+([eE][+-]?\\d+)?)'
+        'name': 'constant.numeric.double.clarence'
+      }
+      {
+        'match': '(-?\\d+N)'
+        'name': 'constant.numeric.bigint.clarence'
+      }
+      {
+        'match': '(-?\\d+)'
+        'name': 'constant.numeric.long.clarence'
+      }
+      { # separating the pattern for reuse
+        'include': '#keyword'
+      }
+    ]
+  'keyword':
+    'match': '(?<=(\\s|\\(|\\[|\\{)):[\\w\\#\\.\\-\\_\\:\\+\\=\\>\\<\\/\\!\\?\\*]+(?=(\\s|\\)|\\]|\\}|\\,))'
+    'name': 'constant.keyword.clarence'
+  'keyfn':
+    'patterns': [
+      {
+        'match': '(?<=(\\s|\\(|\\[|\\{))(if(-[-\\p{Ll}\\?]*)?|when(-[-\\p{Ll}]*)?|for(-[-\\p{Ll}]*)?|cond|do|let(-[-\\p{Ll}\\?]*)?|binding|loop|recur|fn|throw[\\p{Ll}\\-]*|try|catch|finally|([\\p{Ll}]*case))(?=(\\s|\\)|\\]|\\}))'
+        'name': 'storage.control.clarence'
+      }
+      {
+        'match': '(?<=(\\s|\\(|\\[|\\{))(declare-?|(in-)?ns|import|use|require|load|compile|(def[\\p{Ll}\\-]*))(?=(\\s|\\)|\\]|\\}))'
+        'name': 'keyword.control.clarence'
+      }
+    ]
+  'dynamic-variables':
+    'match': '\\*[\\w\\.\\-\\_\\:\\+\\=\\>\\<\\!\\?\\d]+\\*'
+    'name': 'meta.symbol.dynamic.clarence'
+  'map':
+    'begin': '(\\{)'
+    'beginCaptures':
+      '1':
+        'name': 'punctuation.section.map.begin.clarence'
+    'end': '(\\}(?=[\\}\\]\\)\\s]*(?:;|$)))|(\\})'
+    'endCaptures':
+      '1':
+        'name': 'punctuation.section.map.end.trailing.clarence'
+      '2':
+        'name': 'punctuation.section.map.end.clarence'
+    'name': 'meta.map.clarence'
+    'patterns': [
+      {
+        'include': '$self'
+      }
+    ]
+  'metadata':
+    'patterns': [
+      {
+        'begin': '(\\^\\{)'
+        'beginCaptures':
+          '1':
+            'name': 'punctuation.section.metadata.map.begin.clarence'
+        'end': '(\\}(?=[\\}\\]\\)\\s]*(?:;|$)))|(\\})'
+        'endCaptures':
+          '1':
+            'name': 'punctuation.section.metadata.map.end.trailing.clarence'
+          '2':
+            'name': 'punctuation.section.metadata.map.end.clarence'
+        'name': 'meta.metadata.map.clarence'
+        'patterns': [
+          {
+            'include': '$self'
+          }
+        ]
+      }
+      {
+        'begin': '(\\^)'
+        'end': '(\\s)'
+        'name': 'meta.metadata.simple.clarence'
+        'patterns': [
+          {
+            'include': '#keyword'
+          }
+          {
+            'include': '$self'
+          }
+        ]
+      }
+    ]
+  'quoted-sexp':
+    'begin': '([\'``]\\()'
+    'beginCaptures':
+      '1':
+        'name': 'punctuation.section.expression.begin.clarence'
+    'end': '(\\))$|(\\)(?=[\\}\\]\\)\\s]*(?:;|$)))|(\\))'
+    'endCaptures':
+      '1':
+        'name': 'punctuation.section.expression.end.trailing.clarence'
+      '2':
+        'name': 'punctuation.section.expression.end.trailing.clarence'
+      '3':
+        'name': 'punctuation.section.expression.end.clarence'
+    'name': 'meta.quoted-expression.clarence'
+    'patterns': [
+      {
+        'include': '$self'
+      }
+    ]
+  'regexp':
+    'begin': '#"'
+    'beginCaptures':
+      '0':
+        'name': 'punctuation.definition.regexp.begin.clarence'
+    'end': '"'
+    'endCaptures':
+      '0':
+        'name': 'punctuation.definition.regexp.end.clarence'
+    'name': 'string.regexp.clarence'
+    'patterns': [
+      {
+        'include': '#regexp_escaped_char'
+      }
+    ]
+  'regexp_escaped_char':
+    'match': '\\\\.'
+    'name': 'constant.character.escape.clarence'
+  'set':
+    'begin': '(\\#\\{)'
+    'beginCaptures':
+      '1':
+        'name': 'punctuation.section.set.begin.clarence'
+    'end': '(\\}(?=[\\}\\]\\)\\s]*(?:;|$)))|(\\})'
+    'endCaptures':
+      '1':
+        'name': 'punctuation.section.set.end.trailing.clarence'
+      '2':
+        'name': 'punctuation.section.set.end.clarence'
+    'name': 'meta.set.clarence'
+    'patterns': [
+      {
+        'include': '$self'
+      }
+    ]
+  'sexp':
+    'begin': '(\\()'
+    'beginCaptures':
+      '1':
+        'name': 'punctuation.section.expression.begin.clarence'
+    'end': '(\\))$|(\\)(?=[\\}\\]\\)\\s]*(?:;|$)))|(\\))'
+    'endCaptures':
+      '1':
+        'name': 'punctuation.section.expression.end.trailing.clarence'
+      '2':
+        'name': 'punctuation.section.expression.end.trailing.clarence'
+      '3':
+        'name': 'punctuation.section.expression.end.clarence'
+    'name': 'meta.expression.clarence'
+    'patterns': [
+      {
+        # ns, declare and everything that starts with def* or namespace/def*
+        'begin': '(?<=\\()(ns|declare|def[\\w\\d._:+=><!?*-]*|[\\w._:+=><!?*-][\\w\\d._:+=><!?*-]*/def[\\w\\d._:+=><!?*-]*)\\s+'
+        'beginCaptures':
+          '1':
+            'name': 'keyword.control.clarence'
+        'end': '(?=\\))'
+        'name': 'meta.definition.global.clarence'
+        'patterns': [
+          {
+            # there may be some metadata before an actual definition
+            'include': '#metadata'
+          }
+          { # dynamic variables are rendered diferently
+            'include': '#dynamic-variables'
+          }
+          {
+            # recognizing a symbol as being defined here
+            # copied and pasted from #symbol, screw it
+            'match': '([\\p{L}\\.\\-\\_\\+\\=\\>\\<\\!\\?\\*][\\w\\.\\-\\_\\:\\+\\=\\>\\<\\!\\?\\*\\d]*)'
+            'name': 'entity.global.clarence'
+          }
+          {
+            'include': '$self'
+          }
+        ]
+      }
+      {
+        'include': '#keyfn'
+      }
+      {
+        'include': '#constants'
+      }
+      {
+        'include': '#vector'
+      }
+      {
+        'include': '#map'
+      }
+      {
+        'include': '#set'
+      }
+      {
+        'include': '#sexp'
+      }
+      {
+        'match': '(?<=\\()(.+?)(?=\\s|\\))'
+        'captures':
+          '1':
+            'name': 'entity.name.function.clarence'
+        'patterns': [
+          {
+            'include': '$self'
+          }
+        ]
+      }
+      {
+        'include': '$self'
+      }
+    ]
+  'shebang-comment':
+    # NOTE: This must be kept as a begin/end match for language-todo to work
+    'begin': '^(#!)'
+    'beginCaptures':
+      '1':
+        'name': 'punctuation.definition.comment.shebang.clarence'
+    'end': '$'
+    'name': 'comment.line.shebang.clarence'
+  'string':
+    'begin': '(?<!\\\\)(")'
+    'beginCaptures':
+      '1':
+        'name': 'punctuation.definition.string.begin.clarence'
+    'end': '(")'
+    'endCaptures':
+      '1':
+        'name': 'punctuation.definition.string.end.clarence'
+    'name': 'string.quoted.double.clarence'
+    'patterns': [
+      {
+        'match': '\\\\.'
+        'name': 'constant.character.escape.clarence'
+      }
+    ]
+  'namespace-symbol':
+    'patterns': [
+      { # copied from #symbol, plus a / at the end. Matches the "app/" part of
+        # "app/*config*"
+        'match': '([\\p{L}\\.\\-\\_\\+\\=\\>\\<\\!\\?\\*][\\w\\.\\-\\_\\:\\+\\=\\>\\<\\!\\?\\*\\d]*)/'
+        'captures':
+          '1':
+            'name': 'meta.symbol.namespace.clarence'
+      }
+    ]
+  'symbol':
+    'patterns': [
+      {
+        'match': '([\\p{L}\\.\\-\\_\\+\\=\\>\\<\\!\\?\\*][\\w\\.\\-\\_\\:\\+\\=\\>\\<\\!\\?\\*\\d]*)'
+        'name': 'meta.symbol.clarence'
+      }
+    ]
+  'var':
+    'match': '(?<=(\\s|\\(|\\[|\\{)\\#)\'[\\w\\.\\-\\_\\:\\+\\=\\>\\<\\/\\!\\?\\*]+(?=(\\s|\\)|\\]|\\}))'
+    'name': 'meta.var.clarence'
+  'vector':
+    'begin': '(\\[)'
+    'beginCaptures':
+      '1':
+        'name': 'punctuation.section.vector.begin.clarence'
+    'end': '(\\](?=[\\}\\]\\)\\s]*(?:;|$)))|(\\])'
+    'endCaptures':
+      '1':
+        'name': 'punctuation.section.vector.end.trailing.clarence'
+      '2':
+        'name': 'punctuation.section.vector.end.clarence'
+    'name': 'meta.vector.clarence'
+    'patterns': [
+      {
+        'include': '$self'
+      }
+    ]
